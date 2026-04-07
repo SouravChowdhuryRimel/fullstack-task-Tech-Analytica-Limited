@@ -32,13 +32,17 @@ const LoginForm = () => {
           setUser({
             user: response.data.user,
             token: response.data.accessToken,
-          })
+          }),
         );
 
         toast.success(response.message || "Login successful");
 
-        // ✅ Redirect to admin dashboard
-        router.push("/admin/dashboard");
+        // ✅ Redirect based on role
+        if (response.data.user.role === "ADMIN") {
+          router.push("/admin/dashboard");
+        } else {
+          router.push("/user/dashboard");
+        }
       } else {
         toast.error("Invalid response from server");
       }
