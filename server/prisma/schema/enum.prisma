@@ -1,0 +1,25 @@
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BANNED
+  PENDING
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  MODERATOR
+  PROVIDER
+}
+
+enum TaskStatus {
+  PENDING
+  PROCESSING
+  DONE
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+}
