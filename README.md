@@ -2,7 +2,7 @@
 
 This repository contains a robust, enterprise-grade Task Management System built with a focus on Role-Based Access Control (RBAC), automated audit logging, and high-performance data handling.
 
-## 🚀 Technologies Used
+## Technologies Used
 
 - **Backend**: NestJS, Prisma 7+, TypeScript 6+, PostgreSQL
 - **Security**: Passport.js, JWT, Bcrypt
@@ -10,7 +10,7 @@ This repository contains a robust, enterprise-grade Task Management System built
 - **Documentation**: Swagger API
 - **Infrastructure**: Docker & Docker Compose
 
-## ✨ Key Features
+## Key Features
 
 ### 1. Advanced Task Management
 
@@ -31,7 +31,7 @@ This repository contains a robust, enterprise-grade Task Management System built
 - **TypeScript v6**: Full compliance with the latest TS strictness and performance features.
 - **Dockerized**: Easy setup with Docker Compose for database and application.
 
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -63,18 +63,16 @@ docker-compose up -d
    npm run start:dev
    ```
 
-## 🔐 Credentials (Default Seeded)
+## Credentials (Default Seeded)
 
 | Role  | Email            | Password   |
 | ----- | ---------------- | ---------- |
 | Admin | `admin@task.com` | `admin123` |
 | User  | `user@task.com`  | `user123`  |
 
-## 📖 API Documentation
+## API Documentation
 
 Once the server is running, explore the Interactive Swagger documentation at:
 **`http://localhost:5000/docs`**
 
 ---
-
-Built with ❤️ for Technical Excellence.
