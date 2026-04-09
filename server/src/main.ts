@@ -13,14 +13,17 @@ async function bootstrap() {
     bodyParser: true,
   });
 
-   // Global success response formatting
+  // Enable CORS for frontend
+  app.enableCors();
+
+  // Global success response formatting
   app.useGlobalInterceptors(new TransformInterceptor());
 
   // Global error response formatting
   app.useGlobalFilters(new HttpExceptionFilter());
 
   //here add global pipe line for validation
-    app.useGlobalPipes(
+  app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
@@ -30,7 +33,7 @@ async function bootstrap() {
   //here add global prefix for api
   app.setGlobalPrefix('/api/v1')
 
- const config = app.get(ConfigService);
+  const config = app.get(ConfigService);
   const port = config.get('port') || 3000;
   const node_env = config.get('node_env') || 'development';
   if (node_env !== 'production') {
@@ -38,9 +41,9 @@ async function bootstrap() {
   }
 
   await app.listen(port);
-  console.log(`🚀 Application is running successfully!`);
+  console.log(`Application is running successfully!`);
 }
 bootstrap().catch((err) => {
-  console.error('❌ Error during bootstrap:', err);
+  console.error('Error during bootstrap:', err);
   process.exit(1);
 });

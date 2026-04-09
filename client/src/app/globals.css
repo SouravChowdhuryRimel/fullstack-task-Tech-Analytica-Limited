@@ -61,7 +61,7 @@
 /* Root Variables for Colors and Fonts */
 :root {
   /**** PROJECT PLATE! ****/
-  --color-bgPrimary: #f47b03;
+  --color-bgPrimary: #3174cd;
   --color-normalText: #a1a1a1;
   --color-textGreen: #34c759;
   --color-greenTwo: #6cb9ad;
@@ -75,8 +75,8 @@
   --color-grayTwo: #e6ebf0;
   --color-textRed: #ff3b30;
   --color-boldTextTwo: #d7dde4;
-  --color-secondary: #f4ba38;
-  --color-orange: #f4c63f;
+  --color-secondary: #3b82f6;
+  --color-orange: #3174cd;
   --color-fundationYellow: #fbf7eb;
   --color-yellowTwo: #fff5d6;
   --color-boldText: #a1a1a1;

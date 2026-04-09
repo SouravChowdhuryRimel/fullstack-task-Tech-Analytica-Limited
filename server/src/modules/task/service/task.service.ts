@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateTaskDto, UpdateTaskStatusDto, AssignTaskDto } from '../dto/task.dto';
+import { CreateTaskDto, UpdateTaskStatusDto, AssignTaskDto, UpdateTaskDto } from '../dto/task.dto';
 import { TaskStatus, Task } from '@prisma/client';
 import { TaskQueryDto } from '../dto/task-query.dto';
 import { PaginatedResponse, createPaginationMeta } from 'src/common/utils/paginate.util';
@@ -85,6 +85,17 @@ export class TaskService {
         if (!task) throw new NotFoundException('Task not found');
 
         return this.prisma.task.delete({ where: { id } });
+    }
+
+    async updateTask(id: string, dto: UpdateTaskDto) {
+        const task = await this.prisma.task.findUnique({ where: { id } });
+        if (!task) throw new NotFoundException('Task not found');
+
+        return this.prisma.task.update({
+            where: { id },
+            data: dto,
+            include: { assignedTo: { select: { id: true, name: true, email: true } } },
+        });
     }
 
     async findOne(id: string) {

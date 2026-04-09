@@ -18,8 +18,8 @@ export class DashboardService {
         return {
             totals: {
                 totalUser,
-                totalSubscribeUser: totalTasks, // Reusing for UI compatibility
-                totalUnSubscribeUser: totalDoneTasks, // Reusing for UI compatibility
+                totalSubscribeUser: totalTasks,
+                totalUnSubscribeUser: totalDoneTasks,
                 totalAffiliate: 0,
                 totalRevenue: 0,
             },

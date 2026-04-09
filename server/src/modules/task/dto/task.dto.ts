@@ -19,6 +19,28 @@ export class CreateTaskDto {
     userId?: string;
 }
 
+export class UpdateTaskDto {
+    @ApiProperty({ example: 'Updated title', required: false })
+    @IsString()
+    @IsOptional()
+    title?: string;
+
+    @ApiProperty({ example: 'Updated description', required: false })
+    @IsString()
+    @IsOptional()
+    description?: string;
+
+    @ApiProperty({ example: 'user-uuid', required: false })
+    @IsUUID()
+    @IsOptional()
+    userId?: string;
+
+    @ApiProperty({ enum: TaskStatus, example: TaskStatus.PROCESSING, required: false })
+    @IsEnum(TaskStatus)
+    @IsOptional()
+    status?: TaskStatus;
+}
+
 export class UpdateTaskStatusDto {
     @ApiProperty({ enum: TaskStatus, example: TaskStatus.PROCESSING })
     @IsEnum(TaskStatus)

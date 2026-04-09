@@ -17,49 +17,27 @@ import { Label } from "@/components/ui/label";
 import { AlertDialogFooter } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { toast } from "sonner";
+
+import { useAppSelector } from "@/redux/hooks/redux-hook";
+import { useCurrentUser } from "@/redux/features/auth/authSlice";
 
 const AdminProfile = () => {
-  // Static example data
-  const profile = {
-    fullName: "John Doe",
-    email: "admin@example.com",
-    phoneNumber: "+8801777777777",
-    role: "Admin",
-    photo: "/default-avatar.png",
-    subscriptions: [
-      {
-        id: "sub-001",
-        userId: "user123",
-        planId: "pro-monthly",
-        startDate: "2025-10-10T08:00:00Z",
-        endDate: "2025-12-10T08:00:00Z",
-      },
-    ],
-  };
+  const user = useAppSelector(useCurrentUser);
 
   const [formData, setFormData] = useState({
-    fullName: profile.fullName,
-    phoneNumber: profile.phoneNumber,
+    fullName: user?.name || "",
+    phoneNumber: "",
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(
-    profile.photo
+    user?.image || "/default-avatar.png",
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setSelectedFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  if (!user) return <div className="p-10 text-center">Loading profile...</div>;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -72,7 +50,7 @@ const AdminProfile = () => {
       setIsUpdating(false);
       setIsDialogOpen(false);
       setSelectedFile(null);
-      alert("Profile updated successfully (static demo)");
+      toast.success("Profile updated successfully (static demo)");
     }, 1500);
   };
 
@@ -125,7 +103,17 @@ const AdminProfile = () => {
                 <input
                   type="file"
                   ref={fileInputRef}
-                  onChange={handleFileChange}
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const file = e.target.files[0];
+                      setSelectedFile(file);
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setPreviewImage(reader.result as string);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
                   accept="image/*"
                   className="hidden"
                 />
@@ -158,7 +146,7 @@ const AdminProfile = () => {
                   </Label>
                   <Input
                     id="email"
-                    value={profile.email}
+                    value={user.email}
                     className="bg-gray-50 text-gray-500"
                     disabled
                   />
@@ -190,7 +178,7 @@ const AdminProfile = () => {
                 onClick={() => {
                   setIsDialogOpen(false);
                   setSelectedFile(null);
-                  setPreviewImage(profile.photo || null);
+                  setPreviewImage(user.image || "/default-avatar.png");
                 }}
                 disabled={isUpdating}
               >
@@ -221,7 +209,10 @@ const AdminProfile = () => {
         <div className="flex flex-col items-center md:items-start w-full md:w-auto space-y-4">
           <div className="relative w-24 h-24 rounded-full overflow-hidden ring-2 ring-blue-500/30">
             <Image
-              src={previewImage || "/default-avatar.png"}
+              src={
+                previewImage ||
+                "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+              }
               alt="Profile"
               width={96}
               height={96}
@@ -231,9 +222,11 @@ const AdminProfile = () => {
           </div>
           <div className="text-center md:text-left">
             <h2 className="text-xl font-semibold text-gray-900 tracking-tight">
-              {profile.fullName}
+              {user.name}
             </h2>
-            <p className="text-sm text-gray-500 mt-1">Role: {profile.role}</p>
+            <p className="text-sm text-gray-500 mt-1 uppercase">
+              Role: {user.role}
+            </p>
           </div>
         </div>
 
@@ -244,7 +237,7 @@ const AdminProfile = () => {
               <Mail className="h-4 w-4 text-gray-400" />
               <h3 className="text-sm text-gray-500 font-semibold">Email</h3>
             </div>
-            <p className="text-gray-900">{profile.email}</p>
+            <p className="text-gray-900">{user.email}</p>
           </div>
 
           <div className="bg-gray-50 rounded-lg p-4">
@@ -253,74 +246,9 @@ const AdminProfile = () => {
               <h3 className="text-sm text-gray-500 font-semibold">Phone</h3>
             </div>
             <p className="text-gray-900">
-              {profile.phoneNumber || "Not provided"}
+              {formData.phoneNumber || "Not provided"}
             </p>
           </div>
-
-          {/* Subscription Section */}
-          {profile.subscriptions && profile.subscriptions.length > 0 && (
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-black mb-3">
-                Subscription
-              </h3>
-              <div className="space-y-4">
-                {profile.subscriptions.map((subscription) => (
-                  <div
-                    key={subscription.id}
-                    className="border border-gray-200 rounded-lg p-4"
-                  >
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-gray-500 font-semibold">
-                          User ID
-                        </p>
-                        <p className="text-sm font-medium text-gray-900">
-                          {subscription.userId}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500 font-semibold">
-                          Plan ID
-                        </p>
-                        <p className="text-sm font-medium text-gray-900">
-                          {subscription.planId}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500 font-semibold">
-                          Start Date
-                        </p>
-                        <p className="text-sm font-medium text-gray-900">
-                          {format(new Date(subscription.startDate), "PPpp")}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500 font-semibold">
-                          End Date
-                        </p>
-                        <p className="text-sm font-medium text-gray-900">
-                          {format(new Date(subscription.endDate), "PPpp")}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mt-3">
-                      <Badge
-                        variant={
-                          new Date(subscription.endDate) > new Date()
-                            ? "default"
-                            : "destructive"
-                        }
-                      >
-                        {new Date(subscription.endDate) > new Date()
-                          ? "Active"
-                          : "Expired"}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

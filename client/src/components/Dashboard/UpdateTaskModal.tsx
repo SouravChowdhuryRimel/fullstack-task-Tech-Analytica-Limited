@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
-import { useCreateTaskMutation } from "@/redux/features/task/taskApi";
+import React, { useEffect } from "react";
+import { useUpdateTaskMutation } from "@/redux/features/task/taskApi";
+import { useGetUsersQuery } from "@/redux/features/auth/userApi";
 import { useForm } from "react-hook-form";
 import {
   Dialog,
@@ -21,10 +22,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { Plus, Loader } from "lucide-react";
-
-import { useGetUsersQuery } from "@/redux/features/auth/userApi";
 import {
   Select,
   SelectContent,
@@ -32,19 +29,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
+import { Loader, Edit } from "lucide-react";
 
-const CreateTaskModal = () => {
+interface UpdateTaskModalProps {
+  task: any;
+}
+
+const UpdateTaskModal = ({ task }: UpdateTaskModalProps) => {
   const [open, setOpen] = React.useState(false);
-  const [createTask, { isLoading }] = useCreateTaskMutation();
+  const [updateTask, { isLoading }] = useUpdateTaskMutation();
   const { data: userData } = useGetUsersQuery({});
 
   const form = useForm({
     defaultValues: {
-      title: "",
-      description: "",
-      userId: "",
+      title: task.title,
+      description: task.description,
+      userId: task.userId || "",
+      status: task.status,
     },
   });
+
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        title: task.title,
+        description: task.description,
+        userId: task.userId || "",
+        status: task.status,
+      });
+    }
+  }, [open, task, form]);
 
   const onSubmit = async (values: any) => {
     try {
@@ -52,26 +67,25 @@ const CreateTaskModal = () => {
         ...values,
         userId: values.userId === "" ? null : values.userId,
       };
-      await createTask(payload).unwrap();
-      toast.success("Task created successfully");
+      await updateTask({ id: task.id, body: payload }).unwrap();
+      toast.success("Task updated successfully");
       setOpen(false);
-      form.reset();
     } catch (error) {
-      toast.error("Failed to create task");
+      toast.error("Failed to update task");
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-[#3b82f6] hover:bg-[#2563eb] text-white px-6 font-semibold shadow-sm transition-all">
-          Create Task
-        </Button>
+        <button className="text-[#4a5568] border border-gray-200 px-3 py-1 rounded hover:bg-gray-50 text-[13px] font-medium transition-colors">
+          Edit
+        </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-white rounded-xl">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-gray-800">
-            Create New Task
+            Update Task
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -139,9 +153,11 @@ const CreateTaskModal = () => {
                       {userData?.data && userData.data.length > 0 ? (
                         userData.data.map((user: any) => (
                           <SelectItem key={user.id} value={user.id}>
-                            <div className="flex flex-col">
-                              <span className="font-medium">{user.name}</span>
-                              <span className="text-xs text-gray-500">
+                            <div className="flex flex-col text-left">
+                              <span className="font-medium text-gray-900">
+                                {user.name}
+                              </span>
+                              <span className="text-[11px] text-gray-500">
                                 {user.email}
                               </span>
                             </div>
@@ -158,6 +174,33 @@ const CreateTaskModal = () => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-semibold text-gray-700">
+                    Status
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="rounded-lg border-gray-200">
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-white">
+                      <SelectItem value="PENDING">Pending</SelectItem>
+                      <SelectItem value="PROCESSING">Processing</SelectItem>
+                      <SelectItem value="DONE">Done</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="flex justify-end pt-6">
               <Button
                 type="submit"
@@ -167,7 +210,7 @@ const CreateTaskModal = () => {
                 {isLoading ? (
                   <Loader className="animate-spin w-5 h-5" />
                 ) : (
-                  "Create Task"
+                  "Update Task"
                 )}
               </Button>
             </div>
@@ -178,4 +221,4 @@ const CreateTaskModal = () => {
   );
 };
 
-export default CreateTaskModal;
+export default UpdateTaskModal;

@@ -3,12 +3,12 @@ model AuditLog {
   actor        User        @relation(fields: [actorId], references: [id])
   actorId      String
   actionType   AuditAction
-  targetEntity String      // e.g., "Task"
-  targetId     String      // ID of the target task
-  summary      String?     // A short summary of the change
-  previousData Json?       // JSON snapshots
+  targetEntity String
+  targetId     String
+  summary      String?
+  previousData Json?
   newData      Json?
   createdAt    DateTime    @default(now())
-
-  task         Task?       @relation(fields: [targetId], references: [id], map: "AuditLog_targetId_fkey")
+  task         Task?       @relation(fields: [taskId], references: [id])
+  taskId       String?
 }

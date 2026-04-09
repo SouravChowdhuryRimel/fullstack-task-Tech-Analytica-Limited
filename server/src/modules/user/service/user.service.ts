@@ -5,7 +5,6 @@ import { UserRole, UserStatus } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 
-
 @Injectable()
 export class UserService {
   constructor(
@@ -39,5 +38,18 @@ export class UserService {
     });
 
     return user;
+  }
+
+  async findAll() {
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        status: true,
+        createdAt: true,
+      },
+    });
   }
 }

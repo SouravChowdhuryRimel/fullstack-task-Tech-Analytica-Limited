@@ -8,6 +8,7 @@ export const auditLogApi = baseApi.injectEndpoints({
                 method: "GET",
                 params,
             }),
+            providesTags: ["AuditLog" as any],
         }),
     }),
 });

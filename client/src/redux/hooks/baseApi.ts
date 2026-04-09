@@ -7,7 +7,7 @@ const rawBaseQuery = fetchBaseQuery({
   baseUrl: baseURL,
   credentials: "omit",
   prepareHeaders: (headers) => {
-    const token = Cookies.get("token");
+    const token = typeof window !== "undefined" ? Cookies.get("token") : null;
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
@@ -22,7 +22,7 @@ const baseQueryWithErrorHandler: typeof rawBaseQuery = async (
 ) => {
   const result = await rawBaseQuery(args, api, extraOptions);
 
-  // ✅ Global error handler
+  // Global error handler
   if (result.error?.status === 401) {
     Cookies.remove("token");
     if (typeof window !== "undefined") {

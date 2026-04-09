@@ -11,7 +11,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Loader, ChevronLeft, ChevronRight } from "lucide-react";
 
 const AuditLogTable = () => {
@@ -21,87 +20,99 @@ const AuditLogTable = () => {
   if (isLoading)
     return (
       <div className="flex justify-center p-10">
-        <Loader className="animate-spin" />
+        <Loader className="animate-spin text-[#3B71CA]" />
       </div>
     );
 
-  const getActionColor = (action: string) => {
-    switch (action) {
-      case "CREATE":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "UPDATE":
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      case "DELETE":
-        return "bg-red-100 text-red-800 border-red-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  };
-
   return (
-    <div className="space-y-4">
-      <div className="rounded-md border bg-white">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Actor</TableHead>
-              <TableHead>Action</TableHead>
-              <TableHead>Entity</TableHead>
-              <TableHead>Summary</TableHead>
-              <TableHead>Time</TableHead>
+    <div className="overflow-hidden">
+      <Table className="border-collapse border border-gray-200">
+        <TableHeader>
+          <TableRow className="bg-[#f8f9fb] border-b border-gray-200">
+            <TableHead className="font-bold text-[#4a5568] px-6 py-4 border-r border-gray-200">
+              Timestamp
+            </TableHead>
+            <TableHead className="font-bold text-[#4a5568] px-6 py-4 border-r border-gray-200">
+              User
+            </TableHead>
+            <TableHead className="font-bold text-[#4a5568] px-6 py-4 border-r border-gray-200">
+              Action
+            </TableHead>
+            <TableHead className="font-bold text-[#4a5568] px-6 py-4">
+              Details
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data?.data?.map((log: any) => (
+            <TableRow
+              key={log.id}
+              className="hover:bg-gray-50/50 transition-colors border-b border-gray-200"
+            >
+              <TableCell className="text-[#2d3748] px-6 py-5 border-r border-gray-200 text-[14px]">
+                {new Date(log.createdAt).toLocaleString("en-US", {
+                  month: "2-digit",
+                  day: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })}
+              </TableCell>
+              <TableCell className="font-bold text-[#2d3748] px-6 border-r border-gray-200 text-[14px]">
+                {log.actor?.name || "admin"}
+              </TableCell>
+              <TableCell className="text-[#2d3748] px-6 border-r border-gray-200 text-[14px]">
+                {log.actionType}
+              </TableCell>
+              <TableCell className="text-[#4a5568] px-6 text-[14px]">
+                {log.summary}
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data?.data?.map((log: any) => (
-              <TableRow key={log.id}>
-                <TableCell className="font-medium">{log.actor?.name}</TableCell>
-                <TableCell>
-                  <Badge className={getActionColor(log.actionType)}>
-                    {log.actionType}
-                  </Badge>
-                </TableCell>
-                <TableCell>{log.targetEntity}</TableCell>
-                <TableCell className="max-w-xs truncate">
-                  {log.summary}
-                </TableCell>
-                <TableCell>
-                  {new Date(log.createdAt).toLocaleString()}
-                </TableCell>
-              </TableRow>
-            ))}
-            {!data?.data?.length && (
-              <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
-                  No audit logs found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+          ))}
+          {!data?.data?.length && (
+            <TableRow>
+              <TableCell
+                colSpan={4}
+                className="h-24 text-center text-gray-500 font-medium"
+              >
+                No audit logs recorded yet.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
 
-      {/* Pagination */}
-      <div className="flex items-center justify-between px-2">
+      <div className="flex items-center justify-between px-6 py-4 bg-white border-t border-gray-100 mt-2">
         <div className="text-sm text-gray-500">
-          Page {data?.meta?.page} of {data?.meta?.totalPages} (
-          {data?.meta?.total} total items)
+          Showing{" "}
+          <span className="font-semibold text-gray-700">
+            {data?.meta?.page}
+          </span>{" "}
+          of{" "}
+          <span className="font-semibold text-gray-700">
+            {data?.meta?.totalPages}
+          </span>{" "}
+          pages
         </div>
-        <div className="flex space-x-2">
+        <div className="flex space-x-1">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
+            className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={!data?.meta?.hasPreviousPage}
           >
-            <ChevronLeft className="w-4 h-4 mr-1" /> Previous
+            <ChevronLeft className="w-4 h-4" />
           </Button>
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
+            className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600"
             onClick={() => setPage((p) => p + 1)}
             disabled={!data?.meta?.hasNextPage}
           >
-            Next <ChevronRight className="w-4 h-4 ml-1" />
+            <ChevronRight className="w-4 h-4" />
           </Button>
         </div>
       </div>

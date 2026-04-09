@@ -15,6 +15,7 @@ import {
     CreateTaskDto,
     UpdateTaskStatusDto,
     AssignTaskDto,
+    UpdateTaskDto,
 } from '../dto/task.dto';
 import { TaskQueryDto } from '../dto/task-query.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
@@ -72,6 +73,14 @@ export class TaskController {
     @ApiOperation({ summary: 'Assign task to a user (Admin only)' })
     assign(@Param('id') id: string, @Body() assignTaskDto: AssignTaskDto) {
         return this.taskService.assignTask(id, assignTaskDto);
+    }
+
+    @Patch(':id')
+    @Roles(UserRole.ADMIN)
+    @Audit(AuditAction.UPDATE, 'Task')
+    @ApiOperation({ summary: 'Update task details (Admin only)' })
+    update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
+        return this.taskService.updateTask(id, updateTaskDto);
     }
 
     @Delete(':id')

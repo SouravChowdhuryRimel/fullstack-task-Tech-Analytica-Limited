@@ -19,7 +19,7 @@ export const userApi = baseApi.injectEndpoints({
       invalidatesTags: ["User"],
     }),
 
-    // ✅ Add update role mutation
+    // Add update role mutation
     updateUserRole: build.mutation({
       query: ({ id, role }: { id: string; role: "USER" | "ADMIN" }) => ({
         url: `/user/update/${id}`,
@@ -35,7 +35,7 @@ export const userApi = baseApi.injectEndpoints({
 export const {
   useGetUsersQuery,
   useDeleteUserMutation,
-  useUpdateUserRoleMutation, // ✅ Export mutation
+  useUpdateUserRoleMutation, //Export mutation
 } = userApi;
 
 

@@ -6,6 +6,7 @@ export interface User {
   email: string;
   name: string;
   role: string;
+  image?: string | null;
 }
 
 export interface TAuth {

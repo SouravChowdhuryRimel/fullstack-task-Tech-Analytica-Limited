@@ -10,16 +10,14 @@ const NotFound = () => {
         <div className="flex justify-center mb-6">
           <ExclamationTriangleIcon className="h-20 w-20 text-red-400" />
         </div>
-        <h1 className="text-4xl font-extrabold text-white">Access Denied</h1>
+        <h1 className="text-4xl font-extrabold text-white">Page Not Found</h1>
         <p className="text-lg text-gray-300 mt-4">
-          You do not have permission to access this page.
+          The page you are looking for does not exist or you do not have
+          permission to access it.
         </p>
-        <p className="text-sm text-gray-400 mt-1">
-          Incorrect admin email or password.
-        </p>
-        <Link href="/admin/login">
-          <button className="mt-6 inline-block bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-5 rounded transition duration-200 cursor-pointer">
-            Return to Login
+        <Link href="/">
+          <button className="mt-6 inline-block bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-5 rounded transition duration-200 cursor-pointer">
+            Return to Home
           </button>
         </Link>
       </div>
